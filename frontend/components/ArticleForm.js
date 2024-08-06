@@ -34,9 +34,9 @@ export default function ArticleForm(props) {
     // ✨ implement
     // Make sure the inputs have some values
     //console.log(values.title.length)
-    // if (values.title.length >= 1) {return true}
-    
-    values ? true : false
+    console.log(values)
+    if (values.text && values.title && values.topic) {return false}
+    else {return true}
   }
 
   return (
