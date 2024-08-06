@@ -4,7 +4,7 @@ import PT from 'prop-types'
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
-  const {getArticles, articles, setCurrentArticleId} = props
+  const {getArticles, articles, setCurrentArticleId, currentArticle, deleteArticle} = props
 
 
   // ✨ implement conditional logic: if no token exists
@@ -19,7 +19,7 @@ export default function Articles(props) {
 
   useEffect(() => {
     // ✨ grab the articles here, on first render only
-    getArticles()
+    getArticles() 
   }, [])
 
 
@@ -41,9 +41,8 @@ export default function Articles(props) {
                   <p>Topic: {art.topic}</p>
                 </div>
                 <div>
-                  {/* {console.log(art.article_id)} */}
-                  <button disabled={false} onClick={()=> setCurrentArticleId(art.article_id)}>Edit</button>
-                  <button disabled={false} onClick={Function.prototype}>Delete</button>
+                  <button disabled={currentArticle ? true : false} onClick={()=> setCurrentArticleId(art.article_id)}>Edit</button>
+                  <button disabled={currentArticle ? true : false} onClick={() => deleteArticle(art.article_id)}>Delete</button>
                 </div>
               </div>
             )

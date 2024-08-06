@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Routes, Route, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Articles from './Articles'
@@ -87,7 +87,11 @@ export default function App() {
         setArticles(data.articles)
         setMessage(data.message)
       } catch (err) {
-        if(err?.response?.status == 401) logout()
+        if(err?.response?.status == 401) {
+          logout()
+          
+        }
+
       }
     }
     setSpinnerOn(false)
@@ -115,6 +119,7 @@ export default function App() {
       if(err?.response?.status == 401) logout()
     }
     setSpinnerOn(false)
+    setCurrentArticleId(null)
   }
 
   
@@ -146,11 +151,30 @@ export default function App() {
     } catch (err) {
       if(err?.response?.status == 401) logout()
     }  
-    setSpinnerOn(false)   
+    setSpinnerOn(false)  
+    setCurrentArticleId(null) 
   }
 
-  const deleteArticle = article_id => {
+  const deleteArticle = async (article_id) => {
     // ✨ implement
+    setMessage('');
+    setSpinnerOn(true);
+    const token = localStorage.getItem('token')
+    try {
+      const {data} = await axios.delete (
+        articlesUrl + '/' + article_id,
+        {headers: {Authorization: token}}
+      )   
+      console.log(articles)
+      const newArray = articles.filter(a => a.article_id !== article_id)
+      
+      setArticles(newArray)
+      setMessage(data.message)
+    } catch (err) {
+      if(err?.response?.status == 401) logout()
+    }
+    setSpinnerOn(false)
+    setCurrentArticleId(null)
   }
 
   return (
@@ -171,6 +195,7 @@ export default function App() {
             <>
               <ArticleForm 
                 postArticle = {postArticle} 
+                setCurrentArticleId={setCurrentArticleId}
                 currentArticle = {currentArticleId && articles.find(a => a.article_id == currentArticleId)} 
                 updateArticle={updateArticle} 
               />
@@ -178,6 +203,8 @@ export default function App() {
                 getArticles = {getArticles} 
                 articles = {articles} 
                 setCurrentArticleId={setCurrentArticleId}
+                deleteArticle = {deleteArticle}
+                currentArticle = {currentArticleId}
               />
             </>
           } />
